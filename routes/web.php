@@ -22,7 +22,7 @@ Route::get('/articleenrupture', 'StockController@articleEnRupture');
 Route::get('/inventaireIndex', 'StockController@inventaireIndex');
 Route::get('/filterrupture', 'StockController@filterArticleRupture');
 Route::get('/articleEnRupturechart', 'StockController@articleEnRupturechart');
-Route::get('/filterarticleEnRupturechart', 'StockController@filterArticleRuptureChart');
+Route::get('/filterarticleEnRupturechart/{famille}/{marque}', 'StockController@filterArticleRuptureChart');
 
 Route::get('/inventaireFilter', 'StockController@inventaireFilter');
 Route::get('/stock', 'StockController@stockIndex');

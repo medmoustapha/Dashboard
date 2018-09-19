@@ -63,10 +63,10 @@
     </div>
  
 </div>
-
+<div class="panel panel-default">
  <table class="table table-bordered table-hover" >
     
-    <thead>
+    <thead class="panel-footer">
     <div class="row">
       <tr>
       <div class='col-md-1'><th>Code</th></div>
@@ -83,12 +83,12 @@
       </tr>
       </div>
     </thead>
-    <tbody>
+    <tbody class="panel panel-default">
       
   
       </tbody>
  </table>
-
+ </div>
  </div>
   
 
@@ -111,8 +111,8 @@
          url:'/valeurStockAjax',
          data:{station:station, famille:famille, marque:marque, QteAfficher:QteAfficher, fournisseur:fournisseur},
         success:function(data){  
-       
-          alert(data);
+          $('tbody').html("waiting .........."); 
+          //alert(data);
           $('tbody').html(data);  
         }
 

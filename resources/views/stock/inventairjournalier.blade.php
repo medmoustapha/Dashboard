@@ -22,7 +22,7 @@
           <div class='col-md-3'>
             <div class="form-group">
               <div class='input-group date' id='datetimepicker1'>
-              
+                
                 <input type='text' class="form-control" value={{$todayDate}} name="date1" />
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -31,7 +31,7 @@
             </div>
            <div class="form-group">
              <div class='input-group date' id='datetimepicker2' >
-                <input type='text' class="form-control" value='{{$todayDate}}' name="date2" />
+                <input type='text' class="form-control" value='{{$todayDate}}' name="date2" required/>
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -88,16 +88,16 @@
        var date2 = $("input[name=date2]").val();
        var station = $("select[name=Select1]").val();
           
-       alert(date1);
+      // alert(date1);
       /*  alert(date2);  */
-       alert(station);   
+       //alert(station);   
        $.ajax({
          type:'get',
          url:'/inventaireFilter',
          data:{station:station, date1:date1, date2:date2},
         success:function(data){  
          // alert('test');
-        alert(data);
+       // alert(data);
           $('table').html(data);  
         }
 

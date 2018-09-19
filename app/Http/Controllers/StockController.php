@@ -170,7 +170,7 @@ public function valeurStockIndex(){
 
               return view('stock.valeurStock',compact('stations','familles','marques','fournisseurs'),['title'=>"Liste des stocks articles / station"]);
       }
-public function valeurStock(Request $request){
+public function valeurStock(Request $request){ 
     $out='<div class="row">';
     $station=$request->get('station');
     $famille=$request->get('famille');
@@ -308,7 +308,13 @@ public function valeurStock(Request $request){
           $vattctotal=0;
           $vvttctotal=0;
        foreach($articlesStation as $article){
-        $puhttotal+=$article->ART_PrixUnitaireHT;
+        $article->SART_Qte = round($article->SART_Qte,2);
+        $article->ART_PrixUnitaireHT= round($article->ART_PrixUnitaireHT,2);
+        $article->UNITE_ARTICLE_PrixVenteTTC= round( $article->UNITE_ARTICLE_PrixVenteTTC,2);
+        $puhttotal+=$article->ART_PrixUnitaireHT= round($article->ART_PrixUnitaireHT,2);
+        $article->val_Achat= round($article->val_Achat,2);
+        $article->val_Achat_TTC= round($article->val_Achat_TTC,2);
+        $article->val_Vente= round($article->val_Vente,2);
         $pvttcTotal+=$article->UNITE_ARTICLE_PrixVenteTTC;
         $Qtétotal+=$article->SART_Qte;
         $vacmptotal+=$article->val_Achat;
@@ -326,13 +332,11 @@ public function valeurStock(Request $request){
                <div class=col-md-1> <td>'.$article->val_Achat.'</td></div>
                <div class=col-md-1> <td>'.$article->val_Achat_TTC.'</td></div>
                <div class=col-md-1>  <td>'.$article->val_Vente.'</td></div>
-                    
-                   
-                  </tr>';
+          </tr>';
                 
-        } 
-        $out.= '<tr>
-            <div class=col-md-1><td colspan=5><center><b>Toutal</b></center></td></div>
+       } 
+       $out.= '<tr class="panel-footer">
+            <div class=col-md-1><td colspan=5><center><b>Total</b></center></td></div>
             <div class=col-md-1>  <td>'.$puhttotal.'</td></div>
             <div class=col-md-1> <td>'.$pvttcTotal.'</td></div>
             <div class=col-md-1> <td>'. $Qtétotal.'</td></div>
@@ -340,15 +344,15 @@ public function valeurStock(Request $request){
             <div class=col-md-1> <td>'.$vattctotal.'</td></div>
             <div class=col-md-1> <td>'.$vvttctotal.'</td></div></tr>';
           
-    }
-       else{ 
+      }
+      else{ 
            $out .='<tr>
                  <td align="center" colspan="6">No Data Found</td>
                </tr>';
        } 
      return response($out);
 
-}
+ }
 public function articleEnRupture(Request $request){
     $articles =     DB::table('article_marque_famille')
                        ->orderBy('ART_QteStock', 'asc')
@@ -505,47 +509,47 @@ public function  filterArticleRupture(Request $request){
       return response($data);
     }
    
-}
+ }
 public function filterArticleRuptureChart(Request $request){
-  $famille=$request->get('famille');
-  $marque=$request->get('marque');
+  $famille=$request->famille;
+  $marque=$request->marque;
  
   
-  if($famille == "Tout" and $marque== "Tout" ){
+  if($famille != "Tout" and $marque!= "Tout" ){
     $articles =     DB::table('article_marque_famille')
-                        ->orderBy('ART_QteStock', 'asc')
-                        ->limit(10)
-                        ->get();
-      return response()->json($articles);   
+                       ->where('MAR_Designation',$famille)
+                       ->where('FAM_Lib',$marque)
+                       ->orderBy('ART_QteStock', 'asc')
+                       ->limit(10)
+                       ->get();
+      
     }
   elseif($famille !='Tout' and $marque=='Tout'){
       $articles =     DB::table('article_marque_famille')
                         ->where('FAM_Lib',$famille)
-                        ->orderBy('ART_QteStock', 'asc')
+                       ->orderBy('ART_QteStock', 'asc')
                         ->limit(10)
                         ->get();
-       return response()->json($articles);
+  
     }
   elseif($famille =='Tout' and $marque!='Tout'){
       $articles =     DB::table('article_marque_famille')
                          ->where('MAR_Designation',$marque)
-                         ->orderBy('ART_QteStock', 'asc')
+                       ->orderBy('ART_QteStock', 'asc')
                          ->limit(10)
                          ->get();
-      return response()->json($articles);
+      
 
     }
   else{
-      $articles =     DB::table('article_marque_famille')
-      ->where('MAR_Designation',$marque)
-      ->where('FAM_Lib',$famille)
-      ->orderBy('ART_QteStock', 'asc')
-      ->limit(10)
-      ->get();
+    $articles =     DB::table('article_marque_famille')
+                       ->orderBy('ART_QteStock', 'asc')
+                       ->limit(10)
+                       ->get();
   
-      return response()->json($articles);
     }
-    return response()->json($articles);
+     return response()->json($articles);
+    
 }
 public function inventaireIndex(){
                $todayDate = date("Y-m-d");
@@ -558,6 +562,12 @@ public function inventaireIndex(){
 public function inventaireFilter(Request $request){
   $date1=$request->get('date1');
   $date2=$request->get('date2');
+  if($date2==null){
+    $date2=date("m-d-Y H:i");
+     }
+  if($date1==null){
+      $date1=date("01-01-2000 12:00");
+       }
   $station=$request->get('station');
   $out='<thead>
                  <tr>
@@ -567,11 +577,15 @@ public function inventaireFilter(Request $request){
                  <th>INV_Station</th>
                  <th>STAT_Etat</th>
                  </tr>
-       </thead>';
+       </thead><tbody  class="panel panel-default">';
   if($station=="Tout"){
+    
      $results=DB::table('View_InventaireSation')
+                  ->whereBetween('INV_Date', array($date1, $date2))
                   ->get();
-                $total_row = $results->count();
+  
+  
+    $total_row = $results->count();
             ($total_row);
                if($total_row > 0){
                    
@@ -596,6 +610,7 @@ public function inventaireFilter(Request $request){
   else{
     $results=DB::table('View_InventaireSation')
                  ->where('STAT_Desg','LIKE','%'.$station.'%')
+                 ->whereBetween('INV_Date', array($date1, $date2))
                  ->get();
                  
      $total_row = $results->count();
@@ -610,7 +625,7 @@ public function inventaireFilter(Request $request){
                               <td>'.$article->STAT_Etat.'</td>
                             </tr>';} 
       }
-       else{ 
+      else{ 
              $out .='<tr>
                          <td align="center" colspan="6">No Data Found</td>
                      </tr>';
@@ -618,7 +633,7 @@ public function inventaireFilter(Request $request){
    }
    /* $data = array(
     'table_data'  => $out); */
-return response($out);
+  return response($out);
   }
 public function stockIndex(){
   $todayDate = date("Y-m-d");
@@ -626,11 +641,15 @@ public function stockIndex(){
                      ->select('STAT_Desg')
                      ->distinct()
                      ->get();
-return view('stock.stock',compact('stations','todayDate'),['title'=>"Valeur Stock"]);
+   return view('stock.stock',compact('stations','todayDate'),['title'=>"Valeur Stock"]);
 }
 public function stockFilter(Request $request){
   $date1=$request->get('date1');
   $date2=$request->get('date2');
+  if($date2==null){
+    $date2=date("m-d-Y H:i");
+     }
+ 
   $station=$request->get('station');
   $out='<thead>
                  <tr>
@@ -640,11 +659,12 @@ public function stockFilter(Request $request){
                  <th>INV_Station</th>
                  <th>STAT_Etat</th>
                  </tr>
-       </thead>';
-  if($station=="Tout"){
+       </thead><tbody  class="panel panel-default">';
+  if($date1!=null){
      $results=DB::table('View_InventaireSation')
+                  ->whereBetween('INV_Date', array($date1, $date2))
                   ->get();
-                $total_row = $results->count();
+            $total_row = $results->count();
             ($total_row);
                if($total_row > 0){
                    
@@ -662,13 +682,14 @@ public function stockFilter(Request $request){
                   $out .='<tr>
                         <td align="center" colspan="6">No Data Found</td>
                       </tr>';
-              } 
+                } 
 
                 
    }
   else{
     $results=DB::table('View_InventaireSation')
                  ->where('STAT_Desg','LIKE','%'.$station.'%')
+                 
                  ->get();
                  
      $total_row = $results->count();
@@ -690,6 +711,6 @@ public function stockFilter(Request $request){
         } 
    }
    
-return response($out);
+ return response($out);
 }
 }

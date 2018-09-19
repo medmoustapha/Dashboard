@@ -1,9 +1,7 @@
 @extends('back.layout')
 
 @section('main')
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script src="bower_components/c3/c3.min.js"></script>
-<script src="bower_components/d3/d3.min.js"></script>
+
 <div class="form-group"> 
 <body>
 <div class="row">
@@ -29,7 +27,8 @@
     <div class='col-md-4 '>
        
        <label for="submit">Visualiser</label><br>
-        <button class="btn btn-primary btn-submit">Visualiser</button>
+
+        <button class="btn btn-primary btn-submit" onclick="changeFunc()">Visualiser</button>
        
     </div>
     <div class='col-md-4 col-md-offset-0'> 
@@ -62,7 +61,7 @@
          @endforeach 
        </tbody>
     </table>
-
+    
   </div>
   <div class="col-md-6">
           <!-- <div class="panel panel-default">
@@ -72,7 +71,7 @@
                </div>
            </div> -->
            <div id="chart" class="se-pre-con">
-              <div class="margin-0-auto text-center"><img src="../adminlte/img/analytics.png" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
+              <div class="margin-0-auto text-center"><img src="../adminlte/img/user2-160x160.png" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
                   <div translate="NO_DATA_TO_DISPLAY" class="text-center">Aucune donnée à afficher</div>
               </div>   
            </div>
@@ -102,51 +101,8 @@
          
        }
        });
-      
-       $.ajax({
-         type:'get',
-         url:'/filterarticleEnRupturechart',
-         data:{famille:famille, marque:marque},
-        
-        success:function(data){  
-          alert(data);
-         // var jsonData = JSON.parse(data);
-          
-          var chart = c3.generate({
+   
     
-         data: {
-        // json: jsonData, 
-        url: 'http://127.0.0.1:8000/filterarticleEnRupturechart',
-        mimeType: 'json',
-            keys: {
-               x: 'ART_Designation',
-                value: ['ART_QteStock'],
-            },type:'bar'
-    },
-    axis: {
-        y: {
-        label: { // ADD
-            text: '',
-        },
-      
-        tick: {
-          format: d3.format(".3f") // ADD
-        },
-        
-        padding : {
-              top : 1
-            }
-      },
-            x: {
-           
-               type: 'category',
-               
-            }
-        },bindto: '#chart'
-}); 
-         
-       }
-       });
        });
   
 </script>
@@ -160,14 +116,15 @@
         mimeType: 'json',
             keys: {
                x: 'ART_Designation', // it's possible to specify 'x' when category axis
-                value: ['ART_QteStock'],
-            },type:'bar'
-    },
+               value: ['ART_QteStock'],
+               },
+            type:'bar'
+        },
     axis: {
         y: {
         label: { // ADD
             text: '',
-        },
+           },
       
         tick: {
           format: d3.format(".3f") // ADD
@@ -182,8 +139,46 @@
                type: 'category',
                
             }
-        },bindto: '#chart'
+        },
+    bindto: '#chart'
 });
+</script>
+
+<script type="text/javascript" >
+function changeFunc() {
+  var chart = c3.generate({
+    
+    data: {
+    url: 'http://127.0.0.1:8000/filterarticleEnRupturechart/'+document.getElementById('Select2').value
+        +'/'+document.getElementById('Select3').value,
+   mimeType: 'json',
+       keys: {
+          x: 'ART_Designation',
+           value: ['ART_QteStock'],
+       },type:'bar'
+},
+axis: {
+   y: {
+   label: { // ADD
+       text: '',
+   },
+ 
+   tick: {
+     format: d3.format(".2f") // ADD
+   },
+   
+   padding : {
+         top : 1
+       }
+ },
+       x: {
+      
+          type: 'category',
+          
+       }
+   },bindto: '#chart'
+}); 
+}
 </script>
 @endsection
 

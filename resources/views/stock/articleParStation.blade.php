@@ -63,10 +63,10 @@
     </div>
  
 </div>
-
+<div class="panel panel-default">
  <table class="table table-bordered table-hover" >
     
-    <thead>
+    <thead class="panel-footer">
       <tr>
        <th>Code</th>
         <th>Désignation</th>
@@ -75,12 +75,12 @@
         <th>Qté</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="panel panel-default">
       
   
     </tbody>
  </table>
-
+ </div>
  </div>
   
 
@@ -104,7 +104,8 @@
          data:{station:station, famille:famille, marque:marque, QteAfficher:QteAfficher, fournisseur:fournisseur},
         success:function(data){  
          // alert('test');
-          alert(data);
+          //alert(data);
+          $('tbody').html("waiting .........."); 
           $('tbody').html(data);  
         }
 

@@ -80,60 +80,48 @@
        var date1 = $("input[name=date1]").val();
        var date2 = $("input[name=date2]").val();
        var station = $("select[name=Select1]").val();
-          
-       alert(date1);
-      /*  alert(date2);  */
-       alert(station);   
        $.ajax({
          type:'get',
          url:'stockFilter',
          data:{station:station, date1:date1, date2:date2},
-        success:function(data){  
-         // alert('test');
-        alert(data);
+         success:function(data){  
           $('table').html(data);  
-        }
-
-        });
-
-
-
-	});
-
+          }
+         });
+    	});
 </script>
 <script type='text/javascript'>
  
- function disableInput(idInput, valeur)
- {
- var input = document.getElementById(idInput);
+ function disableInput(idInput, valeur){
+     var input = document.getElementById(idInput);
+     input.disabled = valeur;
 
- input.disabled = valeur;
-
- if (valeur) {
- input.style.color.background = "#CCC";
- //BSajoute(idInput);
- } else {
-    document.getElementById("idInput").value="Tout";
- input.style.background = "#FFF";
+     if (valeur) {
+         input.style.color.background = "#CCC";
+       //BSajoute(idInput); 
+        } 
+     else {
+       document.getElementById("idInput").value="Tout";
+       input.style.background = "#FFF";
  //BSsuppr(idInput);
- }
- }
+     }
+  }
   
- function enableInput(idInput, valeur)
- {
- var input = document.getElementById(idInput);
- input.enable = valeur;
+ function enableInput(idInput, valeur) {
+    var input = document.getElementById(idInput);
+    input.enable = valeur;
 
- if (valeur) {
- input.style.background = "#FFF";
- document.getElementById("idInput").value="Tout";
+    if (valeur) {
+      input.style.background = "#FFF";
+      document.getElementById("idInput").value="Tout";
     
- //BSsuppr(idInput);
- } else {
- input.style.background = "#CCC";
- //BSajoute(idInput);
- }
- }
+       //BSsuppr(idInput);
+     } 
+    else {
+      input.style.background = "#CCC";
+      //BSajoute(idInput);
+    }
+  }
  </script>
 <script >
     $(document).ready(function() {
