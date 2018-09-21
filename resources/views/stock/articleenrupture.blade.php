@@ -71,7 +71,7 @@
                </div>
            </div> -->
            <div id="chart" class="se-pre-con">
-              <div class="margin-0-auto text-center"><img src="../adminlte/img/user2-160x160.png" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
+              <div class="margin-0-auto text-center"><img src="" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
                   <div translate="NO_DATA_TO_DISPLAY" class="text-center">Aucune donnée à afficher</div>
               </div>   
            </div>
@@ -146,6 +146,7 @@
 
 <script type="text/javascript" >
 function changeFunc() {
+
   var chart = c3.generate({
     
     data: {
@@ -178,6 +179,7 @@ axis: {
        }
    },bindto: '#chart'
 }); 
+
 }
 </script>
 @endsection

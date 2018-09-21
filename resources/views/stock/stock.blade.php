@@ -39,7 +39,7 @@
        <label for="Select5">Station </label>
        <select class="form-control" id="Select1"name="Select1">
            @foreach($stations as $station)
-          <option>{{$station->STAT_Desg}}</option>
+           <option value={{$station->STAT_Code}}>{{$station->STAT_Desg}}</option>
            @endforeach
        </select>
     </div>
