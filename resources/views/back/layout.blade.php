@@ -14,6 +14,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Ionicons -->
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/cr-1.5.0/kt-2.4.0/rg-1.0.3/rr-1.2.4/sl-1.2.6/datatables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/cr-1.5.0/kt-2.4.0/rg-1.0.3/rr-1.2.4/sl-1.2.6/datatables.min.js"></script> -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 <!-- Theme style -->
 <link rel="stylesheet" href="../adminlte/css/AdminLTE.min.css">
@@ -343,6 +347,7 @@ desired effect
                                         <span class="sidebar-normal">Valeur du stock</span>
                                     </a>
                                 </li>
+                               
                                
                                
                               

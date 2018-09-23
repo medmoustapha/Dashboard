@@ -29,9 +29,9 @@ Route::get('/filterarticleEnRupturechart/{famille}/{marque}', 'StockController@f
 
 Route::get('/inventaireChart/{station}/{date1}/{date2}', 'StockController@inventaireChart');
 Route::get('/inventaireFilter', 'StockController@inventaireFilter');
-
+Route::get('/testdatatable', 'StockController@dataTable');
 Route::get('/stock', 'StockController@stockIndex');
-Route::get('/stockFilter', 'StockController@stockFilter');
+Route::get('/stockFilter1/{station}/{date1}/{date2}', 'StockController@stockFilter1');
 
 Route::get('logout','StockController@logout');
 

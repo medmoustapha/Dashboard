@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-
+use Datatables;
 class StockController extends Controller
 {
 public function index(){
@@ -616,7 +616,7 @@ public function inventaireFilter(Request $request){
                   ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
                   ->orderBy('Qte_Stock', 'desc')
                   ->get();
-  $total_row = $results->count();
+    $total_row = $results->count();
             ($total_row);
                if($total_row > 0){
                    
@@ -627,8 +627,8 @@ public function inventaireFilter(Request $request){
                             
                              <td>'.$article->Code_Art.'</td>
                              <td>'.$article->ART_Designation.'</td>
-                             <td>'.$article->Qte_Vendu.'</td>
-                             <td>'.$article->Qte_Stock.'</td>
+                             <td bgcolor="#0EB204">'.$article->Qte_Vendu.'</td>
+                             <td bgcolor="red"><font color="#FFFFFF">'.$article->Qte_Stock.'</font></td>
                              <td>'. $QteReell.'</td>
                              <td>'.$article->TIK_DateHeureTicket.'</td>
                            </tr>';
@@ -674,8 +674,8 @@ public function inventaireFilter(Request $request){
                     
                      <td>'.$article->Code_Art.'</td>
                      <td>'.$article->ART_Designation.'</td>
-                     <td>'.$article->Qte_Vendu.'</td>#FF0000
-                     <td><font color="red">'.$article->Qte_Stock.'</font></td>
+                     <td bgcolor="#0EB204">'.$article->Qte_Vendu.'</td>#FF0000
+                     <td bgcolor="red"><font color="#FFFFFF">'.$article->Qte_Stock.'</font></td>
                      <td>'. $QteReell.'</td>
                      <td>'.$article->TIK_DateHeureTicket.'</td>
                    </tr>';
@@ -724,7 +724,7 @@ public function inventaireChart(Request $request){
                       ->get();
       return response()->json($results);           
         }
-     else{
+    else{
          
                $results = DB::table('LigneTicket')
                         ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
@@ -757,6 +757,7 @@ public function stockIndex(){
                      ->distinct()
                      ->get();
    return view('stock.stock',compact('stations','todayDate'),['title'=>"Valeur Stock"]);
+ 
   }
   else {  return Redirect::to('login'); }
   }
@@ -770,11 +771,14 @@ public function stockFilter(Request $request){
   $station=$request->get('station');
   $out='<thead>
                  <tr>
-                 <th>INV_Date</th>
-                 <th>INV_Etat</th>
-                 <th>Designation</th>
-                 <th>INV_Station</th>
-                 <th>STAT_Etat</th>
+                 <th>Code Article</th>
+                 <th>Designation Art</th>
+                 <th>PrixHT</th>
+                 <th>Départ</th>
+                 <th>Quantié Entrée</th>
+                 <th>Stock</th>
+                 <th>Stock Final</th>
+                 <th>Valeur</th>
                  </tr>
        </thead><tbody  class="panel panel-default">';
   if($date1!=null){
@@ -828,7 +832,42 @@ public function stockFilter(Request $request){
         } 
    }
    
- return response($out);
+  return response($out);
+  }
+public function stockFilter1(Request $request){
+  $station=$request->station;
+  $date1=$request->date1;
+  $date2=$request->date2;
+  if($date2==null){
+    $date2=date("m-d-Y H:i");
+     }
+  
+  if($date1==null){
+      $date1=date("01-01-2000 12:00");
+       }
+       $results = DB::table('LigneTicket')
+       ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
+       ->join('Ticket', function($join){ $join->on('LigneTicket.LT_NumTicket', '=', 'Ticket.TIK_NumTicket ');
+                                         $join->on('LigneTicket.LT_Exerc', '=', 'Ticket .TIK_Exerc');
+                                         $join->on('LigneTicket.LT_IdCarnet', '=', 'Ticket .TIK_IdCarnet');})
+       ->join('SessionCaisse', 'Ticket.TIK_IdSCaisse', '=', 'SessionCaisse.SC_IdSCaisse ')
+       ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
+       ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
+   
+       ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+                                             ( SELECT  SUM(SART_Qte) AS Qte_Stock 
+                                                FROM dbo.StationArticle
+                                                WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt AND SART_CodeSatation = $station) )as Qte_Stock "))                                                                                            
+      ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
+      ->where('SART_CodeSatation','LIKE','%'.$station.'%')
+                     ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
+                     ->orderBy('Qte_Stock', 'desc')
+                     ->limit(10)
+                     ->get();
+                  return   Datatables::of($results)
+                  ->make(true);
+//return response($results);
+ //return response()->json($results);
  }
 
 
@@ -836,4 +875,14 @@ public function logout(){
   Auth::logout(); // logging out user
   return Redirect::to('login');
       }
+public function dataTable(){
+  if(Auth::check()){
+    $stations =     DB::table('station')->get();
+    $familles=DB::table('famille')->get();
+    $marques=DB::table('marque')->get();
+    $fournisseurs=DB::table('fournisseur')->get();  
+return view('test',['title'=>"DATA TABLE"]);
+}
+else {  return Redirect::to('login'); }
+}
 }

@@ -163,7 +163,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
- 
+        Yajra\Datatables\DatatablesServiceProvider::class,
+       
 
         /*
          * Package Service Providers...
@@ -229,6 +230,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
         'Date' => Jenssegers\Date\Date::class,
+       
+        'Datatables' => Yajra\Datatables\Datatables::class
 
     ],
 
