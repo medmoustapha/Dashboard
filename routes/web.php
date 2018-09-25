@@ -16,26 +16,29 @@ Route::get('/', function () {
 Route::get('/index', function () {
     return view('back.layout',['title'=>""]);
 })->middleware('auth');
+Route::get('/login2', function () {
+    return view('layouts.adminltelogin');
+});
+Route::get('/articlesparsation', 'StockController@index')->name('index')->middleware('auth');
+Route::get('/articleStation', 'StockController@articlesParStation')->middleware('auth');
+Route::get('/valeurStock', 'StockController@valeurStockIndex')->middleware('auth');
+Route::get('/valeurStockAjax', 'StockController@valeurStock')->middleware('auth');
+Route::get('/articleenrupture', 'StockController@articleEnRupture')->middleware('auth');
+Route::get('/inventaireIndex', 'StockController@inventaireIndex')->middleware('auth');
+Route::get('/filterrupture', 'StockController@filterArticleRupture')->middleware('auth');
+Route::get('/articleEnRupturechart', 'StockController@articleEnRupturechart')->middleware('auth');
+Route::get('/filterarticleEnRupturechart/{famille}/{marque}', 'StockController@filterArticleRuptureChart')->middleware('auth');
 
-Route::get('/articlesparsation', 'StockController@index')->name('index');
-Route::get('/articleStation', 'StockController@articlesParStation');
-Route::get('/valeurStock', 'StockController@valeurStockIndex');
-Route::get('/valeurStockAjax', 'StockController@valeurStock');
-Route::get('/articleenrupture', 'StockController@articleEnRupture');
-Route::get('/inventaireIndex', 'StockController@inventaireIndex');
-Route::get('/filterrupture', 'StockController@filterArticleRupture');
-Route::get('/articleEnRupturechart', 'StockController@articleEnRupturechart');
-Route::get('/filterarticleEnRupturechart/{famille}/{marque}', 'StockController@filterArticleRuptureChart');
-
-Route::get('/inventaireChart/{station}/{date1}/{date2}', 'StockController@inventaireChart');
-Route::get('/inventaireFilter', 'StockController@inventaireFilter');
-Route::get('/testdatatable', 'StockController@dataTable');
-Route::get('/stock', 'StockController@stockIndex');
-Route::get('/stockFilter1/{station}/{date1}/{date2}', 'StockController@stockFilter1');
+Route::get('/inventaireChart/{station}/{date1}/{date2}', 'StockController@inventaireChart')->middleware('auth');
+Route::get('/inventaireChart2/{station}/{date1}/{date2}', 'StockController@inventaireChart2')->middleware('auth');
+Route::get('/inventaireFilter', 'StockController@inventaireFilter')->middleware('auth');
+Route::get('/inventFilter', 'StockController@inventFilter')->middleware('auth');
+Route::get('/stock', 'StockController@stockIndex')->middleware('auth');
+Route::get('/stockFilter/{station}/{date1}/{date2}', 'StockController@stockFilter')->middleware('auth');
 
 Route::get('logout','StockController@logout');
 
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');

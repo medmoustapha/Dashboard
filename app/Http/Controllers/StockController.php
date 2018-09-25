@@ -590,7 +590,6 @@ public function inventaireFilter(Request $request){
                  <th>Qté Vendu</th>
                  <th>Qté Stk</th>
                  <th>Qté Reel</th>
-                 <th>Observation</th>
               </tr>
        </thead>
        <tbody  class="panel panel-default">';
@@ -604,18 +603,16 @@ public function inventaireFilter(Request $request){
     ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
     ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
 
-    ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+    ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
                                           ( SELECT  SUM(SART_Qte) AS Qte_Stock 
                                              FROM dbo.StationArticle
-                                             WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt)  ) as Qte_Stock"))                                                                                            
+                                             WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt)
+                                             ) as Qte_Stock"))                                                                                            
    ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
-     /*->where('LigneTicket.LT_Annuler', '<>', true)->orWhereNull('LigneTicket.LT_Annuler')
-   ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))->orderByRaw(DB::raw('sum(LigneTicket.LT_MtTTC) DESC' ))->take($request->req)->get();
-     $results=DB::table('View_InventaireSation')
-                  ->whereBetween('INV_Date', array($date1, $date2)) */
-                  ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
-                  ->orderBy('Qte_Stock', 'desc')
-                  ->get();
+    ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
+    ->orderBy('Qte_Stock', 'desc')
+    ->limit(100)
+    ->get();
     $total_row = $results->count();
             ($total_row);
                if($total_row > 0){
@@ -630,7 +627,7 @@ public function inventaireFilter(Request $request){
                              <td bgcolor="#0EB204">'.$article->Qte_Vendu.'</td>
                              <td bgcolor="red"><font color="#FFFFFF">'.$article->Qte_Stock.'</font></td>
                              <td>'. $QteReell.'</td>
-                             <td>'.$article->TIK_DateHeureTicket.'</td>
+                            
                            </tr>';
                  } }
                else{ 
@@ -655,14 +652,15 @@ public function inventaireFilter(Request $request){
                  ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
                  ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
              
-                 ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+                 ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
                                                        ( SELECT  SUM(SART_Qte) AS Qte_Stock 
                                                           FROM dbo.StationArticle
                                                           WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt AND SART_CodeSatation = $station) )as Qte_Stock "))                                                                                            
                 ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
                 ->where('SART_CodeSatation','LIKE','%'.$station.'%')
-                               ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
+                               ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                                ->orderBy('Qte_Stock', 'desc')
+                               ->limit(100)
                                ->get();
                  
      $total_row = $results->count();
@@ -677,7 +675,7 @@ public function inventaireFilter(Request $request){
                      <td bgcolor="#0EB204">'.$article->Qte_Vendu.'</td>#FF0000
                      <td bgcolor="red"><font color="#FFFFFF">'.$article->Qte_Stock.'</font></td>
                      <td>'. $QteReell.'</td>
-                     <td>'.$article->TIK_DateHeureTicket.'</td>
+                   
                    </tr>';
               } 
       }
@@ -713,12 +711,12 @@ public function inventaireChart(Request $request){
         ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
         ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
     
-        ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+        ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
                                               ( SELECT  SUM(SART_Qte) AS Qte_Stock 
                                                  FROM dbo.StationArticle
                                                  WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt)  ) as Qte_Stock"))                                                                                            
        ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
-                      ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
+                      ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                       ->orderBy('Qte_Stock', 'desc')
                       ->limit(10)
                       ->get();
@@ -735,19 +733,107 @@ public function inventaireChart(Request $request){
                         ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
                         ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
                     
-                        ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+                        ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
                                                               ( SELECT  SUM(SART_Qte) AS Qte_Stock 
                                                                  FROM dbo.StationArticle
                                                                  WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt AND SART_CodeSatation = $station) )as Qte_Stock "))                                                                                            
                        ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
                        ->where('SART_CodeSatation','LIKE','%'.$station.'%')
-                                      ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
+                                      ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                                       ->orderBy('Qte_Stock', 'desc')
                                       ->limit(10)
                                       ->get();
            return response()->json($results);               
          }
 
+   }
+   public function inventaireChart2(Request $request){
+    $station=$request->station;
+    $date1=$request->date1;
+    $date2=$request->date2;
+    if($date2==null){
+      $date2=date("m-d-Y H:i");
+       }
+    
+    if($date1==null){
+        $date1=date("01-01-2000 12:00");
+         }
+   
+      if($station=="Tout"){
+          $results = DB::table('LigneTicket')
+          ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
+          ->join('Ticket', function($join){ $join->on('LigneTicket.LT_NumTicket', '=', 'Ticket.TIK_NumTicket ');
+                                            $join->on('LigneTicket.LT_Exerc', '=', 'Ticket .TIK_Exerc');
+                                            $join->on('LigneTicket.LT_IdCarnet', '=', 'Ticket .TIK_IdCarnet');})
+          ->join('SessionCaisse', 'Ticket.TIK_IdSCaisse', '=', 'SessionCaisse.SC_IdSCaisse ')
+          ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
+          ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
+      
+          ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
+                                                ( SELECT  SUM(SART_Qte) AS Qte_Stock 
+                                                   FROM dbo.StationArticle
+                                                   WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt)  ) as Qte_Stock"))                                                                                            
+         ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
+                        ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
+                        ->orderBy('Qte_Vendu', 'desc')
+                        ->limit(10)
+                        ->get();
+        return response()->json($results);           
+          }
+      else{
+           
+                 $results = DB::table('LigneTicket')
+                          ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
+                          ->join('Ticket', function($join){ $join->on('LigneTicket.LT_NumTicket', '=', 'Ticket.TIK_NumTicket ');
+                                                            $join->on('LigneTicket.LT_Exerc', '=', 'Ticket .TIK_Exerc');
+                                                            $join->on('LigneTicket.LT_IdCarnet', '=', 'Ticket .TIK_IdCarnet');})
+                          ->join('SessionCaisse', 'Ticket.TIK_IdSCaisse', '=', 'SessionCaisse.SC_IdSCaisse ')
+                          ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
+                          ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
+                      
+                          ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
+                                                                ( SELECT  SUM(SART_Qte) AS Qte_Stock 
+                                                                   FROM dbo.StationArticle
+                                                                   WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt AND SART_CodeSatation = $station) )as Qte_Stock "))                                                                                            
+                         ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
+                         ->where('SART_CodeSatation','LIKE','%'.$station.'%')
+                                        ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
+                                        ->orderBy('Qte_Stock', 'desc')
+                                        ->limit(10)
+                                        ->get();
+             return response()->json($results);               
+           }
+  
+     }
+public function inventFilter(){
+    $results = DB::table('LigneTicket')
+    ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
+    ->join('Ticket', function($join){ $join->on('LigneTicket.LT_NumTicket', '=', 'Ticket.TIK_NumTicket ');
+                                      $join->on('LigneTicket.LT_Exerc', '=', 'Ticket .TIK_Exerc');
+                                      $join->on('LigneTicket.LT_IdCarnet', '=', 'Ticket .TIK_IdCarnet');})
+    ->join('SessionCaisse', 'Ticket.TIK_IdSCaisse', '=', 'SessionCaisse.SC_IdSCaisse ')
+    ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
+    ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
+
+    ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
+                                          ( SELECT  SUM(SART_Qte) AS Qte_Stock 
+                                             FROM dbo.StationArticle
+                                             WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt) )as Qte_Stock "))                                                                                            
+  
+                  ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
+                  ->orderBy('Qte_Stock', 'desc')
+                  ->limit(100)
+                  ->get();
+                   /* return   Datatables::of($results)
+                  ->make(true); */
+                  $total_row = $results->count();
+                  ($total_row);
+                     if($total_row > 0){
+                         
+                      foreach($results as $article){
+                       
+                         $article->Qte_Reel=$article->Qte_Stock-(+$article->Qte_Vendu);}}
+                 return response()->json($results);
    }
 public function stockIndex(){
   if(Auth::check()){
@@ -762,89 +848,10 @@ public function stockIndex(){
   else {  return Redirect::to('login'); }
   }
 public function stockFilter(Request $request){
-  $date1=$request->get('date1');
-  $date2=$request->get('date2');
-  if($date2==null){
-    $date2=date("m-d-Y H:i");
-     }
- 
-  $station=$request->get('station');
-  $out='<thead>
-                 <tr>
-                 <th>Code Article</th>
-                 <th>Designation Art</th>
-                 <th>PrixHT</th>
-                 <th>Départ</th>
-                 <th>Quantié Entrée</th>
-                 <th>Stock</th>
-                 <th>Stock Final</th>
-                 <th>Valeur</th>
-                 </tr>
-       </thead><tbody  class="panel panel-default">';
-  if($date1!=null){
-     $results=DB::table('View_InventaireSation')
-                  ->whereBetween('INV_Date', array($date1, $date2))
-                  ->get();
-            $total_row = $results->count();
-            ($total_row);
-               if($total_row > 0){
-                   
-                foreach($results as $article){
-           
-                  $out.= '<tr>
-                             <td>'.$article->INV_Date.'</td>
-                             <td>'.$article->INV_Etat.'</td>
-                             <td>'.$article->INV_Station.'</td>
-                             <td>'.$article->STAT_Desg.'</td>
-                             <td>'.$article->STAT_Etat.'</td>
-                           </tr>';
-                 } }
-               else{ 
-                  $out .='<tr>
-                        <td align="center" colspan="6">No Data Found</td>
-                      </tr>';
-                } 
-
-                
-   }
-  else{
-    $results=DB::table('View_InventaireSation')
-                 ->where('INV_Code_Station','LIKE','%'.$station.'%')
-                 
-                 ->get();
-                 
-     $total_row = $results->count();
-     ($total_row);
-      if($total_row > 0){
-         foreach($results as $article){
-             $out.= '<tr>
-                              <td>'.$article->INV_Date.'</td>
-                              <td>'.$article->INV_Etat.'</td>
-                              <td>'.$article->INV_Station.'</td>
-                              <td>'.$article->STAT_Desg.'</td>
-                              <td>'.$article->STAT_Etat.'</td>
-                            </tr>';} 
-      }
-       else{ 
-             $out .='<tr>
-                         <td align="center" colspan="6">No Data Found</td>
-                     </tr>';
-        } 
-   }
-   
-  return response($out);
-  }
-public function stockFilter1(Request $request){
   $station=$request->station;
   $date1=$request->date1;
   $date2=$request->date2;
-  if($date2==null){
-    $date2=date("m-d-Y H:i");
-     }
-  
-  if($date1==null){
-      $date1=date("01-01-2000 12:00");
-       }
+ 
        $results = DB::table('LigneTicket')
        ->join('article', 'LigneTicket.LT_CodArt', '=', 'article.ART_Code')
        ->join('Ticket', function($join){ $join->on('LigneTicket.LT_NumTicket', '=', 'Ticket.TIK_NumTicket ');
@@ -854,20 +861,20 @@ public function stockFilter1(Request $request){
        ->join('Caisse', 'SessionCaisse.SC_Caisse', '=', 'Caisse.CAI_IdCaisse')
        ->join('StationArticle', 'StationArticle.SART_CodeArt', '=', 'LigneTicket.LT_CodArt')
    
-       ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,Ticket.TIK_DateHeureTicket,
+       ->select( DB::raw(" SUM(LigneTicket.LT_Qte) AS Qte_Vendu,LT_CodArt AS Code_Art,article.ART_Designation,
                                              ( SELECT  SUM(SART_Qte) AS Qte_Stock 
                                                 FROM dbo.StationArticle
                                                 WHERE (SART_CodeArt = dbo.LigneTicket.LT_CodArt AND SART_CodeSatation = $station) )as Qte_Stock "))                                                                                            
       ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
       ->where('SART_CodeSatation','LIKE','%'.$station.'%')
-                     ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation,Ticket.TIK_DateHeureTicket"))
+                     ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                      ->orderBy('Qte_Stock', 'desc')
-                     ->limit(10)
+                     ->limit(20)
                      ->get();
-                  return   Datatables::of($results)
-                  ->make(true);
-//return response($results);
- //return response()->json($results);
+                 /*  return   Datatables::of($results)
+                  ->make(true); */
+     //return response($results);
+    return response()->json($results);
  }
 
 

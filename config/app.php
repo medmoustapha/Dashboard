@@ -164,7 +164,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
-       
+      
 
         /*
          * Package Service Providers...
@@ -232,6 +232,7 @@ return [
         'Date' => Jenssegers\Date\Date::class,
        
         'Datatables' => Yajra\Datatables\Datatables::class
+
 
     ],
 

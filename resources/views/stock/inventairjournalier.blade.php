@@ -1,7 +1,36 @@
 @extends('back.layout')
 
 @section('main')
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="http://cdn.datatables.net/responsive/1.0.0/js/dataTables.responsive.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  
+<link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/> 
+
+<script type="text/javascript" src="DataTables/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/responsive/1.0.0/css/dataTables.responsive.css" />
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css"></script>
+
+<script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
+
 <body>
 
  <div class="form-group">
@@ -62,25 +91,48 @@
 </div>
 
 <div class="row">
-  <div class='col-md-6'>
+  <div class='col-md-8'>
  
-   <table class="table table-bordered table-hover" >
-      
+   <table  id="articles" class="display nowrap"  data-order='[[ 1, "desc" ]]' data-page-length='10'>
+   <thead  >
+                            <tr>
+                            <th>
+                            Code_Art
+                                </th>
+                            <th>
+                            ART_Designation
+                                </th>
+                            <th>Qte_Vendu
+                                </th>
+                               
+                               
+                                <th>Qte_Stock
+                                </th>
+                                <th>Qté  Reel
+                                </th>
+                            </tr>
+                            </thead>
+            
+                            <tbody  class="panel panel-default">
+                       
+       
+        
+                            </tbody>
     </table>
 
    </div>
-   <div class="col-md-6">
+   <div class="col-md-4">
          <!--  <span>Qté Stock</span> -->
            <div id="chart" class="se-pre-con">
           
-              <div class="margin-0-auto text-center"><img src="../adminlte/img/user2-160x160.png" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
+              <div class="margin-0-auto text-center">
                   <div translate="NO_DATA_TO_DISPLAY" class="text-center"></div>
               </div>   
            </div>
            <!-- <span>Qté Vendu</span> -->
            <div id="chart1" class="se-pre-con">
            
-              <div class="margin-0-auto text-center"><img src="../adminlte/img/user2-160x160.png" style="margin-bottom: 15px  height: auto;width: auto; max-width: 50px;max-height: 50px;" alt="">
+              <div class="margin-0-auto text-center">
                   <div translate="NO_DATA_TO_DISPLAY" class="text-center"></div>
               </div>   
            </div>
@@ -101,17 +153,13 @@
        var date1 = $("input[name=date1]").val();
        var date2 = $("input[name=date2]").val();
        var station = $("select[name=Select1]").val();
-          
-      // alert(date1);
-      /*  alert(date2);  */
-       //alert(station);   
+        
        $.ajax({
          type:'get',
          url:'/inventaireFilter',
          data:{station:station, date1:date1, date2:date2},
         success:function(data){  
-         // alert('test');
-       // alert(data);
+        
           $('table').html(data);  
         }
 
@@ -121,49 +169,15 @@
 	});
 
 </script>
-<script type='text/javascript'>
- 
- function disableInput(idInput, valeur)
- {
- var input = document.getElementById(idInput);
-
- input.disabled = valeur;
-
- if (valeur) {
- input.style.color.background = "#CCC";
- //BSajoute(idInput);
- } else {
-    document.getElementById("idInput").value="Tout";
- input.style.background = "#FFF";
- //BSsuppr(idInput);
- }
- }
-  
- function enableInput(idInput, valeur)
- {
- var input = document.getElementById(idInput);
- input.enable = valeur;
-
- if (valeur) {
- input.style.background = "#FFF";
- document.getElementById("idInput").value="Tout";
-    
- //BSsuppr(idInput);
- } else {
- input.style.background = "#CCC";
- //BSajoute(idInput);
- }
- }
- </script>
 <script >
     $(document).ready(function() {
-     /*  format:'DD-MM-YYYY HH:mm:ss',todayBtn: true,autoclose: true */
+    
   $(function() {
     $('#datetimepicker1').datetimepicker({format:'YYYY-MM-DD HH:mm:ss'});
     $('#datetimepicker2').datetimepicker({
      
       format:'YYYY-MM-DD HH:mm:ss',
-      useCurrent: false //Important! See issue #1075
+      useCurrent: false 
     });
     $("#datetimepicker1").on("dp.change", function(e) {
       $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
@@ -213,13 +227,13 @@ axis: {
 var chart = c3.generate({
     
     data: {
-    url: 'http://127.0.0.1:8000/inventaireChart/'+document.getElementById('Select1').value
+    url: 'http://127.0.0.1:8000//inventaireChart2/'+document.getElementById('Select1').value
         +'/'+document.getElementById('date1').value+'/'+document.getElementById('date2').value,
    mimeType: 'json',
        keys: {
           x: 'ART_Designation',
            value: ['Qte_Vendu'],
-       },type:'line'
+       },type:'bar'
 },
 axis: {
    y: {
@@ -243,5 +257,40 @@ axis: {
    },bindto: '#chart1'
 }); 
 }
+</script>
+<script >
+     $.fn.dataTable.ext.errMode = 'throw';
+      $('#articles').DataTable( {
+       
+        "lengthChange": true,
+        
+        "bInfo": false,
+        "ajax": {
+             "url":'http://127.0.0.1:8000/inventFilter',
+             "dataSrc": ""
+          },
+        "language": {
+           "loadingRecords": "Please wait - loading..."
+               },
+        "columns": [
+            { data: 'Code_Art', name: 'Code_Art'},
+            { data: 'ART_Designation', name: 'ART_Designation' },
+            { data: 'Qte_Vendu', name: 'Qte_Vendu' },
+            { data: 'Qte_Stock', name: 'Qte_Stock' },
+            { data: 'Qte_Reel', name: 'Qte_Reel' }
+        ]
+    } );
+   
+    $(".btn-submit").click(function() {
+    $('#articles').DataTable( {
+        dom: 'Bfrtip',
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+    } );
+} );
 </script>
 @endsection

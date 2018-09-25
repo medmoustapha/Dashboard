@@ -83,6 +83,7 @@ desired effect
         <span class="sr-only">Toggle navigation</span>
       </a>
       <!-- Navbar Right Menu -->
+      
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
@@ -141,6 +142,7 @@ desired effect
                   <!-- end notification -->
                 </ul>
               </li>
+              
               <li class="footer"><a href="#">View all</a></li>
             </ul>
           </li>
@@ -187,23 +189,26 @@ desired effect
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <!-- The user image in the navbar-->
-              <img src="../adminlte/img/user2-160x160.jpg" class="user-image" alt="User Image">
- <!-- hidden-xs hides the username on small devices so only the image appears. -->
-            <span class="hidden-xs">Med Moustapha</span>
-            </a>
+            <a href="{{ route('logout') }}" >Sign out</a>
+           
+          <!--   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+               The user image in the navbar-->
+          <!--  <img src="../adminlte/img/user2-160x160.jpg" class="user-image" alt="User Image"> -->
+ <!-- hidden-xs hides the username on small devices so only the image appears. 
+        
+            </a> -->
+            
            <ul class="dropdown-menu">
  <!-- The user image in the menu -->
           <li class="user-header">
          <img src="../adminlte/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                 <p>
-                  Med Moustapha - Web Developer
-                  <small>Member since juin. 2018</small>
+                {{ Auth::user()->name }} - Web Developer
+                  <small>{{ Auth::user()->created_at }}</small>
                 </p>
               </li>
               Menu Body
-              <li class="user-body">
+             <!--  <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
                     <a href="#">Followers</a>
@@ -215,13 +220,13 @@ desired effect
                     <a href="#">Friends</a>
                   </div>
                 </div>
-                <!-- /.row -->
-              </li> 
+                /.row
+              </li>  -->
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
+              <!--   <div class="pull-left">
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
+                </div> -->
                 <div class="pull-right">
                   <a href="{{ route('logout') }}" class="btn btn-default btn-flat">Sign out</a>
                 </div>
@@ -229,11 +234,14 @@ desired effect
             </ul>
           </li>
           <!-- Control Sidebar Toggle Button -->
+       
           <li>
             <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
           </li>
+
         </ul>
       </div>
+      
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
@@ -248,7 +256,7 @@ desired effect
  <img src="../adminlte/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 </div>
         <div class="pull-left info">
-          <p>Med Moustapha</p>
+          <p> {{ Auth::user()->name }}</p>
           <!-- Status -->
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
@@ -372,7 +380,7 @@ desired effect
       </h1>
       <ol class="breadcrumb">
         
-        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> {{$title}}</a></li>
         <li class="active"></li>
       </ol>
     </section>
@@ -401,6 +409,7 @@ desired effect
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
       <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
       <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+     <!--  <li><a href="#control-sidebar-user-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li> -->
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
@@ -415,7 +424,7 @@ desired effect
               <div class="menu-info">
                 <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
 
-                <p>Will be 23 on April 24th</p>
+                <p>Will be {{ Auth::user()->created_at }}</p>
               </div>
             </a>
           </li>
