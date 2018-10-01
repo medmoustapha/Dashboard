@@ -22,7 +22,15 @@
 <script src="https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
 <script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
-
+<script src="https://cdn.datatables.net/dataTabletools/3.1.5/css/dataTables.dataTabletools.css"></script>
+<script src="https://cdn.datatables.net/dataTabletools/3.1.5/js/dataTables.dataTabletools.min.js"></script>
+<script>
+$(document).ready(function() {
+   var table = $('#articles').DataTable( );
+   var tabletools=new $.fn.dataTable.TableTools(table);
+   $(tabletools.fnContainer().insertBefor('content container-fluid'))
+} );
+</script>
 <body>
 
  <div class="form-group">

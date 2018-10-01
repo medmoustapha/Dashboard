@@ -258,6 +258,7 @@ axis: {
 }); 
 }
 </script>
+ 
 <script >
      $.fn.dataTable.ext.errMode = 'throw';
       $('#articles').DataTable( {
@@ -278,19 +279,12 @@ axis: {
             { data: 'Qte_Vendu', name: 'Qte_Vendu' },
             { data: 'Qte_Stock', name: 'Qte_Stock' },
             { data: 'Qte_Reel', name: 'Qte_Reel' }
-        ]
+        ],
+        dom: 'Bfrtip',
+            buttons: ['csv','excel','pdf']
     } );
    
-    $(".btn-submit").click(function() {
-    $('#articles').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ]
-    } );
-} );
+
+  
 </script>
 @endsection
