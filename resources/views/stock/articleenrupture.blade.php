@@ -112,7 +112,7 @@
     
     data: {
         /* json: jsonData, */
-        url: 'http://127.0.0.1:8000/articleEnRupturechart',
+        url: 'http://localhost:8000/articleEnRupturechart',
         mimeType: 'json',
             keys: {
                x: 'ART_Designation', // it's possible to specify 'x' when category axis
@@ -150,7 +150,7 @@ function changeFunc() {
   var chart = c3.generate({
     
     data: {
-    url: 'http://127.0.0.1:8000/filterarticleEnRupturechart/'+document.getElementById('Select2').value
+    url: 'http://localhost:8000/filterarticleEnRupturechart/'+document.getElementById('Select2').value
         +'/'+document.getElementById('Select3').value,
    mimeType: 'json',
        keys: {

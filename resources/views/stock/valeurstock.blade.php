@@ -64,7 +64,7 @@
  
 </div>
 <div class="panel panel-default">
- <table class="table table-bordered table-hover" >
+ <table id="table"class="table table-bordered table-hover" >
     
     <thead class="panel-footer">
     <div class="row">
@@ -88,6 +88,12 @@
   
       </tbody>
  </table>
+ <div id="spinner" style="display:none">
+      <br><br>
+      <center>
+        <img id="img-spinner" src="{{ asset('img/giphy.gif') }}" width ="10%" heigth="10%"/>
+       <center>
+   </div>
  </div>
  </div>
   
@@ -99,6 +105,8 @@
            }});
    $(".btn-submit").click(function(e){
        e.preventDefault();
+       $('#table').hide();
+       $('#spinner').show();
   
        var station = $("select[name=Select1]").val();
        var famille = $("select[name=Select2]").val();
@@ -111,8 +119,8 @@
          url:'/valeurStockAjax',
          data:{station:station, famille:famille, marque:marque, QteAfficher:QteAfficher, fournisseur:fournisseur},
         success:function(data){  
-          $('tbody').html("waiting .........."); 
-          //alert(data);
+          $('#spinner').hide();
+          $('#table').show();
           $('tbody').html(data);  
         }
 

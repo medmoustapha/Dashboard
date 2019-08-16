@@ -40,18 +40,10 @@
    
     <fieldset>
        <legend>Periode </legend>
-   
-         <!--   <input name="active" id="idactive" onclick="disableInput('date1', this.checked);" type="checkbox" />
-           De: 
-          <input name="date1" id="date1" type="date" data-provide="datepicker"/><br>
-          <input name="active" id="idactive" onclick="disableInput('date2', this.checked);" type="checkbox" />
-          Au: 
-          <input name="date2" id="date2" type="date" /> -->
        <div class="container">
           <div class='col-md-3'>
             <div class="form-group">
               <div class='input-group date' id='datetimepicker1'>
-                
                 <input type='text' class="form-control" value={{$todayDate}} name="date1" id="date1"/>
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -91,7 +83,8 @@
 </div>
 
 <div class="row">
-  <div class='col-md-8'>
+  <div class='col-md-8' id="divtable">
+  <div id="divtable">
  
    <table  id="articles" class="display nowrap"  data-order='[[ 1, "desc" ]]' data-page-length='10'>
    <thead  >
@@ -119,8 +112,16 @@
         
                             </tbody>
     </table>
+    </div>
+    
 
    </div>
+   <div id="spinner" style="display:none">
+   <br><br>
+      <center>
+       <img id="img-spinner" src="{{ asset('img/giphy.gif') }}" width ="5%" heigth="5%"/>
+      <center>
+    </div>
    <div class="col-md-4">
          <!--  <span>Qté Stock</span> -->
            <div id="chart" class="se-pre-con">
@@ -148,8 +149,11 @@
            }});
    $(".btn-submit").click(function(e){
        e.preventDefault();
-  
-      
+       
+       $('#divtable').hide();
+       $('#chart').hide();
+       $('#chart1').hide();
+       $('#spinner').show();
        var date1 = $("input[name=date1]").val();
        var date2 = $("input[name=date2]").val();
        var station = $("select[name=Select1]").val();
@@ -159,7 +163,10 @@
          url:'/inventaireFilter',
          data:{station:station, date1:date1, date2:date2},
         success:function(data){  
-        
+          $('#spinner').hide();
+          $('#chart').show();
+          $('#chart1').show();
+          $('#divtable').show();
           $('table').html(data);  
         }
 
@@ -195,12 +202,12 @@ function changeFunc() {
   var chart = c3.generate({
     
     data: {
-    url: 'http://127.0.0.1:8000/inventaireChart/'+document.getElementById('Select1').value
+    url: 'http://localhost:8000/inventaireChart/'+document.getElementById('Select1').value
         +'/'+document.getElementById('date1').value+'/'+document.getElementById('date2').value,
    mimeType: 'json',
        keys: {
           x: 'ART_Designation',
-           value: ['Qte_Stock'],
+           value: ['Qte_Stock','Qte_Vendu'],
        },type:'bar'
 },
 axis: {
@@ -227,12 +234,12 @@ axis: {
 var chart = c3.generate({
     
     data: {
-    url: 'http://127.0.0.1:8000//inventaireChart2/'+document.getElementById('Select1').value
+    url: 'http://localhost:8000/inventaireChart2/'+document.getElementById('Select1').value
         +'/'+document.getElementById('date1').value+'/'+document.getElementById('date2').value,
    mimeType: 'json',
        keys: {
           x: 'ART_Designation',
-           value: ['Qte_Vendu'],
+           value: ['Qte_Vendu','Qte_Stock'],
        },type:'bar'
 },
 axis: {
@@ -267,7 +274,7 @@ axis: {
         
         "bInfo": false,
         "ajax": {
-             "url":'http://127.0.0.1:8000/inventFilter',
+             "url":'http://localhost:8000/inventFilter',
              "dataSrc": ""
           },
         "language": {
@@ -287,4 +294,9 @@ axis: {
 
   
 </script>
+<style type="text/css" media="secreen">
+#spinner {
+left: 50%;
+}
+</style>
 @endsection

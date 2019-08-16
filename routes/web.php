@@ -14,7 +14,7 @@ Route::get('/', function () {
     return Redirect::to('login');
 });
 Route::get('/index', function () {
-    return view('back.layout',['title'=>""]);
+    return view('back.layout',['title'=>"Bien venu"]);
 })->middleware('auth');
 Route::get('/login2', function () {
     return view('layouts.adminltelogin');

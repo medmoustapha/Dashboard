@@ -364,15 +364,17 @@ public function valeurStock(Request $request){
  }
 public function articleEnRupture(Request $request){
   if(Auth::check()){
-    $articles =     DB::table('article_marque_famille')
+    $articles =     DB::table('article')
+                       ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                       ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
                        ->orderBy('ART_QteStock', 'asc')
                        ->limit(10)
                        ->get();
-    $marques =     DB::table('article_marque_famille')
+    $marques =     DB::table('marque')
                        ->select('MAR_Designation')
                        ->distinct()
                        ->get();
-    $familles =     DB::table('article_marque_famille')
+    $familles =     DB::table('famille')
                        ->distinct()
                        ->select('FAM_Lib')
                        //
@@ -384,8 +386,9 @@ public function articleEnRupture(Request $request){
   else {  return Redirect::to('login'); }
  }
 public function articleEnRupturechart(Request $request){
-      $articles =     DB::table('article_marque_famille')
-                         ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+                         ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                         ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
                          ->limit(10)
                          ->get();
          return response()->json($articles);   
@@ -396,7 +399,9 @@ public function  filterArticleRupture(Request $request){
   
   $out='';
   if($famille =="Tout" and $marque =="Tout"){
-                 $articles =     DB::table('article_marque_famille')
+                 $articles =     DB::table('article')
+                 ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                 ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
                         ->orderBy('ART_QteStock', 'asc')
                         ->limit(10)
                         ->get();
@@ -426,9 +431,11 @@ public function  filterArticleRupture(Request $request){
                       return response($data);
     }
   elseif($famille !='Tout' and $marque=='Tout'){
-      $articles =     DB::table('article_marque_famille')
-                        ->where('FAM_Lib',$famille)
-                        ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+                        ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                        ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+                        ->where('famille.FAM_Lib',$famille)
+                        ->orderBy('article.ART_QteStock', 'asc')
                         ->limit(10)
                         ->get();
                         $total_row = $articles->count();
@@ -456,9 +463,11 @@ public function  filterArticleRupture(Request $request){
                       return response($data);
     }
   elseif($famille =='Tout' and $marque!='Tout'){
-      $articles =     DB::table('article_marque_famille')
-      ->where('MAR_Designation',$marque)
-      ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+      ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+      ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+      ->where('marque.MAR_Designation',$marque)
+      ->orderBy('article.ART_QteStock', 'asc')
       ->limit(10)
       ->get();
      
@@ -488,10 +497,12 @@ public function  filterArticleRupture(Request $request){
 
     }
   else{
-      $articles =     DB::table('article_marque_famille')
-      ->where('MAR_Designation',$marque)
-      ->where('FAM_Lib',$famille)
-      ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+      ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+      ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+      ->where('marque.MAR_Designation',$marque)
+      ->where('famille.FAM_Lib',$famille)
+      ->orderBy('article.ART_QteStock', 'asc')
       ->limit(10)
       ->get();
      
@@ -527,34 +538,43 @@ public function filterArticleRuptureChart(Request $request){
  
   
   if($famille != "Tout" and $marque!= "Tout" ){
-    $articles =     DB::table('article_marque_famille')
-                       ->where('MAR_Designation',$famille)
-                       ->where('FAM_Lib',$marque)
-                       ->orderBy('ART_QteStock', 'asc')
+    $articles =     DB::table('article')
+                        ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                        ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+                       ->where('marque.MAR_Designation',$famille)
+                       ->where('famille.FAM_Lib',$marque)
+                       ->where('ART_QteStock','>', 0)
+                       ->orderBy('ART_QteStock', 'desc')
                        ->limit(10)
                        ->get();
       
     }
   elseif($famille !='Tout' and $marque=='Tout'){
-      $articles =     DB::table('article_marque_famille')
-                        ->where('FAM_Lib',$famille)
-                       ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+                        ->join('famille', 'article.ART_Famille', '=', 'famille.FAM_Code')
+                        ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+                        ->where('famille.FAM_Lib',$famille)
+                        ->where('ART_QteStock','>', 0)
+                        ->orderBy('ART_QteStock', 'desc')
                         ->limit(10)
                         ->get();
   
     }
   elseif($famille =='Tout' and $marque!='Tout'){
-      $articles =     DB::table('article_marque_famille')
-                         ->where('MAR_Designation',$marque)
-                       ->orderBy('ART_QteStock', 'asc')
+      $articles =     DB::table('article')
+                          ->join('marque ', 'article.ART_Marque', '=', 'marque.MAR_Code')
+                         ->where('marque.MAR_Designation',$marque)
+                         ->where('ART_QteStock','>', 0)
+                         ->orderBy('ART_QteStock', 'desc')
                          ->limit(10)
                          ->get();
       
 
     }
   else{
-    $articles =     DB::table('article_marque_famille')
-                       ->orderBy('ART_QteStock', 'asc')
+    $articles =     DB::table('article')
+                       ->where('ART_QteStock','>', 0)
+                       ->orderBy('ART_QteStock', 'desc')
                        ->limit(10)
                        ->get();
   
@@ -611,7 +631,7 @@ public function inventaireFilter(Request $request){
    ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
     ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
     ->orderBy('Qte_Stock', 'desc')
-    ->limit(100)
+    ->limit(10)
     ->get();
     $total_row = $results->count();
             ($total_row);
@@ -718,7 +738,7 @@ public function inventaireChart(Request $request){
        ->whereBetween('Ticket.TIK_DateHeureTicket', array($date1, $date2))
                       ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                       ->orderBy('Qte_Stock', 'desc')
-                      ->limit(10)
+                      ->limit(5)
                       ->get();
       return response()->json($results);           
         }
@@ -822,7 +842,7 @@ public function inventFilter(){
   
                   ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                   ->orderBy('Qte_Stock', 'desc')
-                  ->limit(100)
+                  ->limit(50)
                   ->get();
                    /* return   Datatables::of($results)
                   ->make(true); */
@@ -869,7 +889,7 @@ public function stockFilter(Request $request){
       ->where('SART_CodeSatation','LIKE','%'.$station.'%')
                      ->groupBy(DB::raw("LigneTicket.LT_CodArt,article.ART_Designation"))
                      ->orderBy('Qte_Stock', 'desc')
-                     ->limit(20)
+                     ->limit(10)
                      ->get();
                  /*  return   Datatables::of($results)
                   ->make(true); */
@@ -883,13 +903,13 @@ public function logout(){
   return Redirect::to('login');
       }
 public function dataTable(){
-  if(Auth::check()){
-    $stations =     DB::table('station')->get();
-    $familles=DB::table('famille')->get();
-    $marques=DB::table('marque')->get();
-    $fournisseurs=DB::table('fournisseur')->get();  
-return view('test',['title'=>"DATA TABLE"]);
-}
-else {  return Redirect::to('login'); }
-}
+    if(Auth::check()){
+      $stations =     DB::table('station')->get();
+      $familles=DB::table('famille')->get();
+      $marques=DB::table('marque')->get();
+      $fournisseurs=DB::table('fournisseur')->get();  
+  return view('test',['title'=>"DATA TABLE"]);
+  }
+  else {  return Redirect::to('login'); }
+  }
 }

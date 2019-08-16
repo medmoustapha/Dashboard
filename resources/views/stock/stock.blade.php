@@ -24,13 +24,7 @@
 <script src="https://cdn.datatables.net/fixedheader/3.1.5/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdn.datatables.net/dataTabletools/3.1.5/css/dataTables.dataTabletools.css"></script>
 <script src="https://cdn.datatables.net/dataTabletools/3.1.5/js/dataTables.dataTabletools.min.js"></script>
-<script>
-$(document).ready(function() {
-   var table = $('#articles').DataTable( );
-   var tabletools=new $.fn.dataTable.TableTools(table);
-   $(tabletools.fnContainer().insertBefor('content container-fluid'))
-} );
-</script>
+
 <body>
 
  <div class="form-group">
@@ -108,7 +102,12 @@ $(document).ready(function() {
                          
                            
                         </table>
-
+                        <div id="spinner" style="display:none">
+                        <br><br>
+                         <center>
+                           <img id="img-spinner" src="{{ asset('img/giphy.gif') }}" width ="10%" heigth="10%"/>
+                          <center>
+                        </div>
   </div>
   <div class="col-md-6">
          <!--  <span>Qté Stock</span> -->
@@ -131,14 +130,14 @@ $(document).ready(function() {
            }}); 
  $(".btn-submit").click(function(e){
        e.preventDefault();
-  
-      
+       $('#articles').hide();
+       $('#spinner').show();
     var date1 = $("input[name=date1]").val();
     var date2 = $("input[name=date2]").val();
     var station = $("select[name=Select1]").val();
     var table = $(".display tbody");
     $.ajax({
-        url: 'http://127.0.0.1:8000/stockFilter/'+station+'/'+date1+'/'+date2,
+        url: 'http://localhost:8000/stockFilter/'+station+'/'+date1+'/'+date2,
         method: "GET",
         xhrFields: {
             withCredentials: true
@@ -151,6 +150,8 @@ $(document).ready(function() {
               "lengthChange": false,
               "bPaginate": true,
               "bInfo": false,});
+              $('#spinner').hide();
+              $('#articles').show();
             $.each(data, function (a, b) {
                 table.append("<tr><td>"+b.Qte_Vendu+"</td>"+
                     "<td>" + b.Code_Art + "</td>" +
@@ -160,6 +161,7 @@ $(document).ready(function() {
  
             $(".display").DataTable();
         }
+        
     });
 
 
@@ -167,7 +169,7 @@ $(document).ready(function() {
   var chart = c3.generate({
     
     data: {
-    url: 'http://127.0.0.1:8000/stockFilter/'+station+'/'+date1+'/'+date2,
+    url: 'http://localhost:8000//stockFilter/'+station+'/'+date1+'/'+date2,
    mimeType: 'json',
        keys: {
           x: 'ART_Designation',
@@ -200,39 +202,26 @@ axis: {
 
 <script >
     $(document).ready(function() {
-  $(function() {
-    $('#datetimepicker1').datetimepicker({format:'YYYY-MM-DD HH:mm:ss'});
-    $('#datetimepicker2').datetimepicker({
-      format:'YYYY-MM-DD HH:mm:ss',
-      useCurrent: false //Important! See issue #1075
-    });
-    $("#datetimepicker1").on("dp.change", function(e) {
-      $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
-    });
-    $("#datetimepicker2").on("dp.change", function(e) {
-      $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+    
+    $(function() {
+      $('#datetimepicker1').datetimepicker({format:'YYYY-MM-DD HH:mm:ss'});
+      $('#datetimepicker2').datetimepicker({
+       
+        format:'YYYY-MM-DD HH:mm:ss',
+        useCurrent: false 
+      });
+      $("#datetimepicker1").on("dp.change", function(e) {
+        $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+      });
+      $("#datetimepicker2").on("dp.change", function(e) {
+        $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+      });
     });
   });
- });
 </script>
 
 
 
-<!-- <script >
- $('#articles').DataTable({
-            processing: false,
-            serverSide: true,
-            ajax: 'http://127.0.0.1:8000/stockFilter1/001/2017-07-01%2000:00:00/2018-09-21%2000:00:00',
-            columns: [
-            { data: 'Qte_Vendu', name: 'Qte_Vendu' },
-            { data: 'Code_Art', name: 'Code_Art' },
-            { data: 'ART_Designation', name: 'ART_Designation' },
-            { data: 'Qte_Stock', name: 'Qte_Stock' }
-        ]
-          }).draw();
-     
-
-</script> --> 
 <script >
 var date1=new Date();
 var date2=new Date();
@@ -242,14 +231,14 @@ var station="001";
       $('#articles').DataTable( {
         "searching": false,
         "lengthChange": false,
-        "bPaginate": true,
+        "bPaginate": false,
         "bInfo": false,
         "language": {
           "loadingRecords": "No records available...",
           "infoEmpty": "No records available"
         },
          "ajax": {
-             "url":'http://127.0.0.1:8000/stockFilter/'+station+'/'+date1+'/'+date2,
+             "url":'http://localhost:8000/stockFilter/'+station+'/'+date1+'/'+date2,
              "dataSrc": ""
          },
 
